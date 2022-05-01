@@ -37,4 +37,4 @@ async def retrieve_url_content(url: str, order: Optional[str] = None):
 
 @app.get("/health", status_code=status.HTTP_200_OK)
 async def health_endpoint():
-    return {"status": "OK"}
+    return {"status": "healthy"}
