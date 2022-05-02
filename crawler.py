@@ -18,19 +18,17 @@ def url_path_is_valid(url_path: str) -> bool:
 
 
 def get_url_content(url: str) -> str:
-    try:
-        response = requests.get(url)
+    response = requests.get(url)
 
-        if response.status_code == requests.codes.ok:
-            return response.text
-        else:
-            logger.error(
-                f"We got an unexpected error message for the url {url}"
-                f" with HTTP status code: {response.status_code}")
-    except Exception as e:
-        logger.exception(
-            f"An error occured when trying to access to the url {url}"
-            f" with the message: {e}")
+    if response.status_code == requests.codes.ok:
+        return response.text
+    else:
+        raise requests.RequestException(
+            f"We got an unexpected RequestException message for the url {url}"
+            f" with HTTP status code: {response.status_code}")
+        logger.error(
+            f"We got an unexpected error message for the url {url}"
+            f" with HTTP status code: {response.status_code}")
 
 
 def extract_text_from_html(html_content: str) -> list:
@@ -41,9 +39,10 @@ def extract_text_from_html(html_content: str) -> list:
     for string in body.strings:
         stripped_string = string.lstrip().rstrip()\
             .strip(".").strip("?").strip("!").strip(",")\
-            .strip(";").strip("'").strip("\"")
+            .strip(";")
         if len(stripped_string) > 0:
-            text_content.append(stripped_string)
+            stripped_string_list = stripped_string.split()
+            text_content.extend(stripped_string_list)
 
     return text_content
 
@@ -51,13 +50,16 @@ def extract_text_from_html(html_content: str) -> list:
 def count_words_from_sentences(sentences: list[str]) -> dict:
     words_counts = {}
 
-    for sentence in sentences:
-        sentence_list = sentence.split()
-        for word in sentence_list:
-            stripped_word = word.lstrip().rstrip()
-            if stripped_word in words_counts.keys():
-                words_counts[stripped_word] += 1
-            else:
-                words_counts[stripped_word] = 1
+    for word in sentences:
+        lowered_word = word.lower()
+        stripped_word = lowered_word.lstrip().rstrip()\
+            .strip(",").strip(";")\
+            .strip(".").strip("?").strip("!")\
+            .strip("'").strip("\"").strip("(")\
+            .strip(")").strip("[").strip("]")
+        if stripped_word in words_counts.keys():
+            words_counts[stripped_word] += 1
+        else:
+            words_counts[stripped_word] = 1
 
     return words_counts

@@ -1,8 +1,13 @@
+import logging
 from typing import Optional
 
 from fastapi import FastAPI, status
+from requests.exceptions import RequestException
 
 import crawler
+
+logging.basicConfig(format='%(asctime)s %(message)s')
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -12,7 +17,21 @@ async def retrieve_url_content(url: str, order: Optional[str] = None):
     if not crawler.url_path_is_valid(url):
         return {"error": "The given url is not valid"}
 
-    response_content = crawler.get_url_content(url)
+    try:
+        response_content = crawler.get_url_content(url)
+    except RequestException as e:
+        logger.exception(
+            "A RequestException occured when trying"
+            f" to access to the url {url}"
+            f" with the message: {e}")
+
+        return {"error": f"An error occured with the url: {url};"
+                " please check that the provided url is valid."}
+    except Exception as e:
+        logger.exception(
+            f"An Exception occured when trying to access to the url {url}"
+            f" with the message: {e}")
+
     text = crawler.extract_text_from_html(response_content)
     words_counts = crawler.count_words_from_sentences(text)
 
