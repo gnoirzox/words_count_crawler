@@ -67,7 +67,7 @@ async def retrieve_url_content(url: str, order: Optional[str] = None):
     except Exception as e:
         logger.exception(
             f"An Exception occured when trying to access to the url {url}"
-            f" with the message: {e}")
+            f" with the error: {e}")
 
         return JSONResponse(
             status_code=500,
