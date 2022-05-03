@@ -3,7 +3,8 @@ from typing import Optional
 
 from fastapi import FastAPI, status
 from fastapi.responses import JSONResponse
-from aiohttp import ClientConnectionError, ClientResponseError
+from aiohttp import ClientConnectionError, ClientResponseError,\
+    ContentTypeError
 
 import crawler
 import utils
@@ -21,6 +22,21 @@ async def retrieve_url_content(url: str, order: Optional[str] = None):
 
     try:
         response_content = await crawler.get_url_content(url)
+    except ContentTypeError as e:
+        logger.exception(
+            "A ContentTypeError occured when trying"
+            f" to access to the url {url};"
+            f" with error: {e}"
+        )
+
+        return JSONResponse(
+            status_code=415,
+            content={
+                "error": f"A content type error occured with the url: {url};"
+                " please check that the url is providing"
+                " the expected HTML content."
+            }
+        )
     except ClientResponseError as e:
         logger.exception(
             "A ClientResponseError occured when trying"
@@ -39,7 +55,7 @@ async def retrieve_url_content(url: str, order: Optional[str] = None):
         logger.exception(
             "A ClientConnectionError occured when trying"
             f" to access to the url {url}"
-            f" with the message: {e}")
+            f" with the error: {e}")
 
         return JSONResponse(
             status_code=400,

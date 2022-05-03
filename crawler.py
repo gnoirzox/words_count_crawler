@@ -5,9 +5,11 @@ from bs4 import BeautifulSoup
 async def get_url_content(url: str) -> str:
     async with aiohttp.ClientSession(raise_for_status=True) as session:
         async with session.get(url) as response:
-            if response.ok:
+            if response.ok and response.content_type == "text/html":
                 result = await response.text()
                 return result
+            elif response.ok and response.content_type != "text/html":
+                raise aiohttp.ContentTypeError()
 
 
 def extract_text_from_html(html_content: str) -> list:
