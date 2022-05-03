@@ -28,6 +28,17 @@ async def retrieve_words_count_from_url_content(
             }
         )
 
+    if order and order not in {"alphabetical", "desc_count", "asc_count"}:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "error": "The given order value is not valid;"
+                " please ensure that the given order is"
+                " one of the following values:"
+                " 'alphabetical', 'desc_count' or 'asc_count'"
+            }
+        )
+
     try:
         response_content = await crawler.get_url_content(url)
     except ContentTypeError as e:

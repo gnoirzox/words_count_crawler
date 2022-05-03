@@ -14,6 +14,14 @@ async def test_retrieve_words_count_from_url_content_invalid_url():
 
 
 @pytest.mark.asyncio
+async def test_retrieve_words_count_from_url_content_invalid_order():
+    response = await retrieve_words_count_from_url_content(
+        "https://example.com", order="hello1234")
+
+    assert response.status_code == 400
+
+
+@pytest.mark.asyncio
 async def test_retrieve_words_count_from_url_content_content_type_error():
     mock_session = aiohttp.ClientSession
     mock_session.get = MagicMock()
