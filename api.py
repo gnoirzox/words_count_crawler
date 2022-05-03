@@ -2,6 +2,7 @@ import logging
 from typing import Optional
 
 from fastapi import FastAPI, status
+from fastapi.responses import JSONResponse
 from aiohttp import ClientConnectionError, ClientResponseError
 
 import crawler
@@ -26,21 +27,38 @@ async def retrieve_url_content(url: str, order: Optional[str] = None):
             f" to access to the url {url}"
             f" with the message: {e.message}; and status: {e.status}")
 
-        return {"error": f"An error occured with the url: {url};"
-                " please check that the provided url is valid."}
+        return JSONResponse(
+            status_code=e.status,
+            content={
+                "error": f"An error occured with the url: {url};"
+                " please check that the provided url is valid."
+            }
+        )
+
     except ClientConnectionError as e:
         logger.exception(
             "A ClientConnectionError occured when trying"
             f" to access to the url {url}"
             f" with the message: {e}")
 
-        return {"error": f"A connection error occured with the url: {url};"
-                " please check that the provided url is valid."}
+        return JSONResponse(
+            status_code=400,
+            content={
+                "error": f"A connection error occured with the url: {url};"
+                " please check that the provided url is valid."
+            }
+        )
     except Exception as e:
         logger.exception(
             f"An Exception occured when trying to access to the url {url}"
             f" with the message: {e}")
-        return {"error": "An internal error occured."}
+
+        return JSONResponse(
+            status_code=500,
+            content={
+                "error": "An internal error occured."
+            }
+        )
 
     text = crawler.extract_text_from_html(response_content)
     words_counts = crawler.count_words_from_sentences(text)
