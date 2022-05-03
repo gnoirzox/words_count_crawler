@@ -9,7 +9,11 @@ async def get_url_content(url: str) -> str:
                 result = await response.text()
                 return result
             elif response.ok and response.content_type != "text/html":
-                raise aiohttp.ContentTypeError()
+                raise aiohttp.ContentTypeError(
+                    request_info=aiohttp.RequestInfo(
+                        url=url, headers=response.headers,
+                        real_url=url, method="GET"),
+                    history=())
 
 
 def extract_text_from_html(html_content: str) -> list:
