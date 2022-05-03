@@ -1,5 +1,5 @@
-from bs4 import BeautifulSoup
 import aiohttp
+from bs4 import BeautifulSoup
 
 
 async def get_url_content(url: str) -> str:

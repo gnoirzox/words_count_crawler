@@ -2,7 +2,7 @@ import logging
 from typing import Optional
 
 from fastapi import FastAPI, status
-from aiohttp import ClientResponseError
+from aiohttp import ClientConnectionError, ClientResponseError
 
 import crawler
 import utils
@@ -27,6 +27,14 @@ async def retrieve_url_content(url: str, order: Optional[str] = None):
             f" with the message: {e.message}; and status: {e.status}")
 
         return {"error": f"An error occured with the url: {url};"
+                " please check that the provided url is valid."}
+    except ClientConnectionError as e:
+        logger.exception(
+            "A ClientConnectionError occured when trying"
+            f" to access to the url {url}"
+            f" with the message: {e}")
+
+        return {"error": f"A connection error occured with the url: {url};"
                 " please check that the provided url is valid."}
     except Exception as e:
         logger.exception(
