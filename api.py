@@ -15,10 +15,18 @@ logger = logging.getLogger(__name__)
 app = FastAPI()
 
 
-@app.get("/get_text/{url:path}")
-async def retrieve_url_content(url: str, order: Optional[str] = None):
+@app.get("/words_count/{url:path}")
+async def retrieve_words_count_from_url_content(
+        url: str, order: Optional[str] = None):
     if not utils.url_path_is_valid(url):
-        return {"error": "The given url is not valid"}
+        return JSONResponse(
+            status_code=400,
+            content={
+                "error": "The given url is not valid;"
+                " please ensure that the given url starts"
+                " either with 'http' or 'https'."
+            }
+        )
 
     try:
         response_content = await crawler.get_url_content(url)
@@ -26,7 +34,7 @@ async def retrieve_url_content(url: str, order: Optional[str] = None):
         logger.exception(
             "A ContentTypeError occured when trying"
             f" to access to the url {url};"
-            f" with error: {e}"
+            f" with error: {e}."
         )
 
         return JSONResponse(
@@ -41,7 +49,7 @@ async def retrieve_url_content(url: str, order: Optional[str] = None):
         logger.exception(
             "A ClientResponseError occured when trying"
             f" to access to the url {url}"
-            f" with the message: {e.message}; and status: {e.status}")
+            f" with the message: {e.message}; and status: {e.status}.")
 
         return JSONResponse(
             status_code=e.status,
@@ -55,7 +63,7 @@ async def retrieve_url_content(url: str, order: Optional[str] = None):
         logger.exception(
             "A ClientConnectionError occured when trying"
             f" to access to the url {url}"
-            f" with the error: {e}")
+            f" with the error: {e}.")
 
         return JSONResponse(
             status_code=400,
@@ -67,7 +75,7 @@ async def retrieve_url_content(url: str, order: Optional[str] = None):
     except Exception as e:
         logger.exception(
             f"An Exception occured when trying to access to the url {url}"
-            f" with the error: {e}")
+            f" with the error: {e}.")
 
         return JSONResponse(
             status_code=500,
