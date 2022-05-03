@@ -1,7 +1,7 @@
 import logging
 
 from bs4 import BeautifulSoup
-import requests
+import aiohttp
 import validators
 
 logging.basicConfig(format='%(asctime)s %(message)s')
@@ -17,18 +17,12 @@ def url_path_is_valid(url_path: str) -> bool:
     return url_is_valid
 
 
-def get_url_content(url: str) -> str:
-    response = requests.get(url)
-
-    if response.status_code == requests.codes.ok:
-        return response.text
-    else:
-        raise requests.RequestException(
-            f"We got an unexpected RequestException message for the url {url}"
-            f" with HTTP status code: {response.status_code}")
-        logger.error(
-            f"We got an unexpected error message for the url {url}"
-            f" with HTTP status code: {response.status_code}")
+async def get_url_content(url: str) -> str:
+    async with aiohttp.ClientSession(raise_for_status=True) as session:
+        async with session.get(url) as response:
+            if response.ok:
+                result = await response.text()
+                return result
 
 
 def extract_text_from_html(html_content: str) -> list:

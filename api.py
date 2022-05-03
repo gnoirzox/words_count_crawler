@@ -2,7 +2,7 @@ import logging
 from typing import Optional
 
 from fastapi import FastAPI, status
-from requests.exceptions import RequestException
+from aiohttp import ClientResponseError
 
 import crawler
 
@@ -18,12 +18,12 @@ async def retrieve_url_content(url: str, order: Optional[str] = None):
         return {"error": "The given url is not valid"}
 
     try:
-        response_content = crawler.get_url_content(url)
-    except RequestException as e:
+        response_content = await crawler.get_url_content(url)
+    except ClientResponseError as e:
         logger.exception(
-            "A RequestException occured when trying"
+            "A ClientResponseError occured when trying"
             f" to access to the url {url}"
-            f" with the message: {e}")
+            f" with the message: {e.message}; and status: {e.status}")
 
         return {"error": f"An error occured with the url: {url};"
                 " please check that the provided url is valid."}
