@@ -3,7 +3,7 @@ import aiohttp
 import pytest
 from unittest.mock import MagicMock
 
-import crawler
+from app import crawler
 
 
 @pytest.fixture

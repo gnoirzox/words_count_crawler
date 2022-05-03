@@ -1,6 +1,6 @@
 import pytest
 
-import utils
+from app import utils
 
 
 @pytest.fixture

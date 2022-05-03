@@ -3,7 +3,7 @@ import aiohttp
 import pytest
 from unittest.mock import MagicMock
 
-from api import retrieve_words_count_from_url_content
+from app.api import retrieve_words_count_from_url_content
 
 
 @pytest.mark.asyncio
