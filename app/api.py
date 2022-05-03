@@ -6,7 +6,8 @@ from fastapi.responses import JSONResponse
 from aiohttp import ClientConnectionError, ClientResponseError,\
     ContentTypeError
 
-from app import crawler, utils
+import crawler
+import utils
 
 logging.basicConfig(format='%(asctime)s %(message)s')
 logger = logging.getLogger(__name__)
