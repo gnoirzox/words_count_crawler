@@ -51,3 +51,13 @@ def test_transform_words_counts_order_descending(words_counts_dict):
         ("going", 1), ("to", 1), ("it", 1), ("then", 1),
         ("them", 1), ("you've", 1), ("said", 1)
     ]
+
+
+def test_transform_words_counts_order_alphabetical(words_counts_dict):
+    assert utils.transform_words_counts_order(
+        words_counts_dict, order="alphabetical") == [
+        ("audience", 1), ("going", 1), ("it", 1),
+        ("said", 1), ("say", 2), ("tell", 2),
+        ("the", 1), ("them", 1), ("then", 1), ("to", 1),
+        ("what", 2), ("you're", 1), ("you've", 1)
+    ]
