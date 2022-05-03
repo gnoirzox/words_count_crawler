@@ -1,20 +1,5 @@
-import logging
-
 from bs4 import BeautifulSoup
 import aiohttp
-import validators
-
-logging.basicConfig(format='%(asctime)s %(message)s')
-logger = logging.getLogger(__name__)
-
-
-def url_path_is_valid(url_path: str) -> bool:
-    url_is_valid = False
-
-    if validators.url(url_path):
-        url_is_valid = True
-
-    return url_is_valid
 
 
 async def get_url_content(url: str) -> str:

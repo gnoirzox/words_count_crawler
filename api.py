@@ -5,6 +5,7 @@ from fastapi import FastAPI, status
 from aiohttp import ClientResponseError
 
 import crawler
+import utils
 
 logging.basicConfig(format='%(asctime)s %(message)s')
 logger = logging.getLogger(__name__)
@@ -14,7 +15,7 @@ app = FastAPI()
 
 @app.get("/get_text/{url:path}")
 async def retrieve_url_content(url: str, order: Optional[str] = None):
-    if not crawler.url_path_is_valid(url):
+    if not utils.url_path_is_valid(url):
         return {"error": "The given url is not valid"}
 
     try:
@@ -31,27 +32,13 @@ async def retrieve_url_content(url: str, order: Optional[str] = None):
         logger.exception(
             f"An Exception occured when trying to access to the url {url}"
             f" with the message: {e}")
+        return {"error": "An internal error occured."}
 
     text = crawler.extract_text_from_html(response_content)
     words_counts = crawler.count_words_from_sentences(text)
+    words_counts_list = utils.transform_words_counts_order(words_counts, order)
 
-    if order and order in {"alphabetical", "desc_count", "asc_count"}:
-        if order == "alphabetical":
-            words_counts = sorted(
-                words_counts.items(), key=lambda item: item[0])
-        elif order == "desc_count":
-            words_counts = sorted(
-                words_counts.items(),
-                key=lambda item: item[1],
-                reverse=True
-            )
-        elif order == "asc_count":
-            words_counts = sorted(
-                words_counts.items(), key=lambda item: item[1])
-    else:
-        words_counts = list(words_counts.items())
-
-    return {"words_counts": words_counts}
+    return {"words_counts": words_counts_list}
 
 
 @app.get("/health", status_code=status.HTTP_200_OK)
