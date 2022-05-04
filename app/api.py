@@ -95,9 +95,10 @@ async def retrieve_words_count_from_url_content(
             }
         )
 
-    text = crawler.extract_text_from_html(response_content)
-    words_counts = crawler.count_words_from_sentences(text)
-    words_counts_list = utils.transform_words_counts_order(words_counts, order)
+    extracted_text = crawler.extract_text_from_html(response_content)
+    words_counts_dict = crawler.count_words_from_sentences(extracted_text)
+    words_counts_list = utils.transform_words_counts_order(
+        words_counts_dict, order)
 
     return {"words_counts": words_counts_list}
 

@@ -28,6 +28,7 @@ def transform_words_counts_order(
             words_counts = sorted(
                 words_counts.items(), key=lambda item: item[1])
     else:
+        # If the order value is not set, then just returned an unordered list
         words_counts = list(words_counts.items())
 
     return words_counts

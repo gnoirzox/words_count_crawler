@@ -16,12 +16,13 @@ async def get_url_content(url: str) -> str:
                     history=())
 
 
-def extract_text_from_html(html_content: str) -> list:
+def extract_text_from_html(html_content: str) -> list[str]:
     soup = BeautifulSoup(html_content, "html.parser")
     body = soup.body
     text_content = []
 
     for string in body.strings:
+        # Sanitise the string from punctuations and spaces
         stripped_string = string.lstrip().rstrip()\
             .strip(".").strip("?").strip("!").strip(",")\
             .strip(";")
@@ -37,11 +38,14 @@ def count_words_from_sentences(sentences: list[str]) -> dict:
 
     for word in sentences:
         lowered_word = word.lower()
+
+        # Sanitise the word from remaining punctuations and spaces
         stripped_word = lowered_word.lstrip().rstrip()\
             .strip(",").strip(";")\
             .strip(".").strip("?").strip("!")\
             .strip("'").strip("\"").strip("(")\
             .strip(")").strip("[").strip("]")
+
         if stripped_word in words_counts.keys():
             words_counts[stripped_word] += 1
         else:
