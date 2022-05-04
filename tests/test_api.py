@@ -10,7 +10,7 @@ from app.api import retrieve_words_count_from_url_content
 async def test_retrieve_words_count_from_url_content_invalid_url():
     response = await retrieve_words_count_from_url_content("hello1234")
 
-    assert response.status_code == 400
+    assert response.status_code == 422
 
 
 @pytest.mark.asyncio
@@ -18,7 +18,7 @@ async def test_retrieve_words_count_from_url_content_invalid_order():
     response = await retrieve_words_count_from_url_content(
         "https://example.com", order="hello1234")
 
-    assert response.status_code == 400
+    assert response.status_code == 422
 
 
 @pytest.mark.asyncio

@@ -1,10 +1,10 @@
 import logging
 from typing import Optional
 
-from fastapi import FastAPI, status
-from fastapi.responses import JSONResponse
 from aiohttp import ClientConnectionError, ClientResponseError,\
     ContentTypeError
+from fastapi import FastAPI, status
+from fastapi.responses import JSONResponse
 
 import crawler
 import utils
@@ -14,13 +14,34 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+words_count_responses = {
+    200: {"description": "Everything went well"},
+    400: {
+        "description": "A connection error occured with the given url"
+    },
+    404: {"description": "The distant url is not available at the moment"},
+    415: {"description": "A content type error occured with the given url"},
+    422: {
+        "description": "An error occured due to one of the given parameters"
+        " (url or order)"
+    },
+    500: {"description": "An internal error occured"}
+}
 
-@app.get("/words_count/{url:path}")
+
+@app.get("/words_count/{url:path}", responses={**words_count_responses})
 async def retrieve_words_count_from_url_content(
         url: str, order: Optional[str] = None):
+    """
+    Retrieve words counts from an external url with content-type 'text/html'
+
+    The returned JSON object returns a list of words with their attached
+    count number and order depending on the optionall order query parameter
+    ("alphabetical", "desc_count", "asc_count")
+    """
     if not utils.url_path_is_valid(url):
         return JSONResponse(
-            status_code=400,
+            status_code=422,
             content={
                 "error": "The given url is not valid;"
                 " please ensure that the given url starts"
@@ -30,7 +51,7 @@ async def retrieve_words_count_from_url_content(
 
     if order and order not in {"alphabetical", "desc_count", "asc_count"}:
         return JSONResponse(
-            status_code=400,
+            status_code=422,
             content={
                 "error": "The given order value is not valid;"
                 " please ensure that the given order is"
