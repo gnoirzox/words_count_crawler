@@ -14,7 +14,7 @@ def url_path_is_valid(url_path: str) -> bool:
 
 def transform_words_counts_order(
         words_counts: dict, order: Optional[str] = None) -> list:
-    if order and order in {"alphabetical", "desc_count", "asc_count"}:
+    if order and order in {"alphabetical", "asc_count", "desc_count"}:
         if order == "alphabetical":
             words_counts = sorted(
                 words_counts.items(), key=lambda item: item[0])
