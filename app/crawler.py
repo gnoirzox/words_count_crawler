@@ -25,7 +25,9 @@ def extract_text_from_html(html_content: str) -> list[str]:
         # Sanitise the string from punctuations and spaces
         stripped_string = string.lstrip().rstrip()\
             .strip(".").strip("?").strip("!").strip(",")\
-            .strip(";")
+            .strip(";").strip("'").strip("\"").strip("(")\
+            .strip(")").strip("[").strip("]")\
+            .strip(":").strip("#").strip("”").strip("`")
         if len(stripped_string) > 0:
             stripped_string_list = stripped_string.split()
             text_content.extend(stripped_string_list)
@@ -44,7 +46,8 @@ def count_words_from_sentences(sentences: list[str]) -> dict:
             .strip(",").strip(";")\
             .strip(".").strip("?").strip("!")\
             .strip("'").strip("\"").strip("(")\
-            .strip(")").strip("[").strip("]")
+            .strip(")").strip("[").strip("]")\
+            .strip(":").strip("#").strip("”").strip("`")
 
         if stripped_word in words_counts.keys():
             words_counts[stripped_word] += 1
