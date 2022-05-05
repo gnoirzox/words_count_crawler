@@ -76,7 +76,7 @@ The main reasons to use these tools are:
 
 ## Areas of improvement
 
-There is 2 main areas where the project could be improved:
+There are 2 main areas where the project could be improved:
 * Input validation: I could have used the validation from the FastAPI framework, this would have improved the api documentation and the related OpenAPI schema.
 * Caching: for performace purpose, caching with Redis (or Memcached, DynamoDB) could be used to store the words counts results and then retrieve them directly from the caching system if the cache is not expired.
 
