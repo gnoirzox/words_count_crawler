@@ -45,6 +45,15 @@ Run a Docker container
 $ docker run --network host words_count_api
 
 ```
+### Run the unit tests locally
+
+If you want to run the automated tests locally, you will have to setup a virtual environment and install the dependencies from `requirements.txt` and then run the following command:
+
+```
+$ PYTHONPATH=app python -m pytest
+
+```
+
 
 ### Access to the api
 
