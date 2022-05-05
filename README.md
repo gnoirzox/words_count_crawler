@@ -67,11 +67,12 @@ Example of valid queries:
 
 ## Technical decisions
 
-To create an API, I decided to use the FastAPI framework and BeautifulSoup4 to scrape the content of the given url.
+To create an API, I decided to use the FastAPI framework, aiohttp to retrieve the content of the given url and BeautifulSoup4 to scrape the content of the given url.
 
 The main reasons to use these tools are:
 
 * FastAPI: Easy to use, small memory footprint, good performance with asynchronous calls (uses uvloop as the event loop with the `uvicorn` server).   
+* aiohttp: permits to make asynchronous HTTP requests (using asyncio) for performace purpose.
 * BeautifulSoup4: Easy to use, the HTML parser is fairly performant as well.
 
 ## Areas of improvement
